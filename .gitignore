@@ -4,3 +4,7 @@ bin/keyframe/
 bin/*.txt
 *~
 *.DS_Store
+.cproject
+.project
+.pydevproject
+.settings/

@@ -48,6 +48,7 @@ ax.plot(position[:,0], position[:,1], position[:,2], label='gt')
 ax.plot(position1[:,0], position1[:,1], position1[:,2], label='imu_int')
 # ax.plot(position2[:,0], position2[:,1], position2[:,2], label='noise')
 ax.plot([position[0,0]], [position[0,1]], [position[0,2]], 'r.', label='start')
+ax.plot([position[500,0]], [position[500,1]], [position[500,2]], 'r.', label='start2')
 
 ax.legend()
 ax.set_xlabel('X')

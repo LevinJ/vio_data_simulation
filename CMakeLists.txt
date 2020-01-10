@@ -3,7 +3,7 @@ SET (PROJECT_NAME imuSimWithPointLine)
 PROJECT(${PROJECT_NAME})
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# SET(CMAKE_BUILD_TYPE Debug) # Release, RelWithDebInfo , Debug
+SET(CMAKE_BUILD_TYPE Debug) # Release, RelWithDebInfo , Debug
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
@@ -22,6 +22,11 @@ ${EIGEN3_INCLUDE_DIR}
 ${SOPHUS_INCLUDE_DIR} # for both sophus and geographiclib
 ${OPENCV_INCLUDE_DIR}
 )
+
+message(status "Sophus_VERSION: ${Sophus_VERSION}")
+message(status "Sophus_FOUND: ${Sophus_FOUND}")
+message(status "SOPHUS_INCLUDE_DIR: ${SOPHUS_INCLUDE_DIR}")
+message(status "Sophus_LIBRARIES: ${Sophus_LIBRARIES}")
 
 LIST(APPEND LINK_LIBS
 ${OpenCV_LIBS}
