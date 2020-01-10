@@ -9,3 +9,4 @@ bin/*.txt
 .pydevproject
 .settings/
 bin/data_gen
+bin/
