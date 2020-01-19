@@ -10,3 +10,4 @@ bin/*.txt
 .settings/
 bin/data_gen
 bin/
+lib/
