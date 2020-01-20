@@ -34,6 +34,22 @@ void propagate(char * src, char * dist, double x, double y, double z,
 
 	std::ofstream save_points;
 	save_points.open(dist);
+	//write the header
+	save_points<<"timestamp"<<","
+					   <<"qw"<<","
+					   <<"qx"<<","
+					   <<"qy"<<","
+					   <<"qz"<<","
+					   <<"x"<<","
+					   <<"y"<<","
+					   <<"z"<<","
+					   <<"qw_gt"<<","
+					   <<"qx_gt"<<","
+					   <<"qy_gt"<<","
+					   <<"qz_gt"<<","
+					   <<"gt_x"<<","
+					   <<"gt_y"<<","
+					   <<"gt_z"<<std::endl;
 
 	Eigen::Vector3d dp(vx,  vy, vz);
 	Eigen::Vector3d position( x, y,  z);
@@ -97,21 +113,21 @@ void propagate(char * src, char * dist, double x, double y, double z,
 
 
 		//　按着imu postion, imu quaternion , cam postion, cam quaternion 的格式存储，由于没有cam，所以imu存了两次
-		save_points<<imupose.timestamp<<" "
-				   <<Qwb.w()<<" "
-				   <<Qwb.x()<<" "
-				   <<Qwb.y()<<" "
-				   <<Qwb.z()<<" "
-				   <<Pwb(0)<<" "
-				   <<Pwb(1)<<" "
-				   <<Pwb(2)<<" "
-				   <<Qwb.w()<<" "
-				   <<Qwb.x()<<" "
-				   <<Qwb.y()<<" "
-				   <<Qwb.z()<<" "
-				   <<Pwb(0)<<" "
-				   <<Pwb(1)<<" "
-				   <<Pwb(2)<<" "
+		save_points<<imupose.timestamp<<","
+				   <<Qwb.w()<<","
+				   <<Qwb.x()<<","
+				   <<Qwb.y()<<","
+				   <<Qwb.z()<<","
+				   <<Pwb(0)<<","
+				   <<Pwb(1)<<","
+				   <<Pwb(2)<<","
+				   <<Qwb.w()<<","
+				   <<Qwb.x()<<","
+				   <<Qwb.y()<<","
+				   <<Qwb.z()<<","
+				   <<imupose.twb[0]<<","
+				   <<imupose.twb[1]<<","
+				   <<imupose.twb[2]<<","
 				   <<std::endl;
 
 	}
