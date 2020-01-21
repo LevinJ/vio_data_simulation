@@ -21,7 +21,7 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	cout<<src<<endl;
 	cout<<dist<<endl;
 	cout<<x<<","<<y<<","<<z<<endl;
-	cout<<roll<<","<<pitch<<","<<yaw<<endl;
+	cout<<roll<<","<<pitch<<","<<yaw*180/3.14<<endl;
 	cout<<vx<<","<<vy<<","<<vz<<endl;
 
 
@@ -36,20 +36,31 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	save_points.open(dist);
 	//write the header
 	save_points<<"timestamp"<<","
-					   <<"qw"<<","
-					   <<"qx"<<","
-					   <<"qy"<<","
-					   <<"qz"<<","
+
+			 	 	   <<"roll"<<","
+					   <<"pitch"<<","
+					   <<"yaw"<<","
+				   	   <<"gt_roll"<<","
+					   <<"gt_pitch"<<","
+					   <<"gt_yaw"<<","
+
 					   <<"x"<<","
 					   <<"y"<<","
 					   <<"z"<<","
-					   <<"qw_gt"<<","
-					   <<"qx_gt"<<","
-					   <<"qy_gt"<<","
-					   <<"qz_gt"<<","
 					   <<"gt_x"<<","
 					   <<"gt_y"<<","
-					   <<"gt_z"<<std::endl;
+					   <<"gt_z"<<","
+
+					   <<"wx"<<","
+					   <<"wy"<<","
+					   <<"wz"<<","
+					   <<"ax"<<","
+					   <<"ay"<<","
+					   <<"az"<<","
+
+
+
+					   <<std::endl;
 
 	Eigen::Vector3d dp(vx,  vy, vz);
 	Eigen::Vector3d position( x, y,  z);
@@ -109,26 +120,70 @@ void propagate(char * src, char * dist, double x, double y, double z,
 		Pwb = Pwb + Vw * dt + 0.5 * dt * dt * acc_w;
 		Vw = Vw + acc_w * dt;
 
+		Eigen::Matrix3d Rwb(Qwb);
+		Eigen::Vector3d euler_angles = Rwb.eulerAngles ( 2,1,0 );
+		euler_angles = euler_angles * 180/3.14;
+
 
 
 
 		//　按着imu postion, imu quaternion , cam postion, cam quaternion 的格式存储，由于没有cam，所以imu存了两次
 		save_points<<imupose.timestamp<<","
-				   <<Qwb.w()<<","
-				   <<Qwb.x()<<","
-				   <<Qwb.y()<<","
-				   <<Qwb.z()<<","
+				<<euler_angles[2]<<","
+			    <<euler_angles[1]<<","
+			    <<euler_angles[0]<<","
+			    <<imupose.rpy[0]<<","
+			    <<imupose.rpy[1]<<","
+			    <<imupose.rpy[2]<<","
+
+
 				   <<Pwb(0)<<","
 				   <<Pwb(1)<<","
 				   <<Pwb(2)<<","
-				   <<Qwb.w()<<","
-				   <<Qwb.x()<<","
-				   <<Qwb.y()<<","
-				   <<Qwb.z()<<","
 				   <<imupose.twb[0]<<","
 				   <<imupose.twb[1]<<","
 				   <<imupose.twb[2]<<","
+
+				   <<imupose.imu_gyro[0]<<","
+				   <<imupose.imu_gyro[1]<<","
+				   <<imupose.imu_gyro[2]<<","
+
+				   <<imupose.imu_acc[0]<<","
+				   <<imupose.imu_acc[1]<<","
+				   <<imupose.imu_acc[2]<<","
+
+
 				   <<std::endl;
+
+		//print to screen
+		std::cout<<imupose.timestamp<<","
+				           <<"EUlER:"
+						   <<euler_angles[2]<<","
+						   <<euler_angles[1]<<","
+						   <<euler_angles[0]<<"; "
+						   <<imupose.rpy[0]<<","
+						   <<imupose.rpy[1]<<","
+						   <<imupose.rpy[2]<<"; "
+
+
+						   <<"POSITION:"
+						   <<Pwb(0)<<","
+						   <<Pwb(1)<<","
+						   <<Pwb(2)<<"; "
+						   <<imupose.twb[0]<<","
+						   <<imupose.twb[1]<<","
+						   <<imupose.twb[2]<<","
+
+						   <<"DATA:"
+						   <<imupose.imu_gyro[0]<<","
+						   <<imupose.imu_gyro[1]<<","
+						   <<imupose.imu_gyro[2]<<"; "
+						   <<imupose.imu_acc[0]<<","
+						   <<imupose.imu_acc[1]<<","
+						   <<imupose.imu_acc[2]<<","
+
+						   <<std::endl;
+
 
 	}
 

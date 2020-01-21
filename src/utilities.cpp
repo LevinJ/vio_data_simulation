@@ -81,6 +81,7 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
             Eigen::Vector3d t;
             Eigen::Vector3d gyro;
             Eigen::Vector3d acc;
+            Eigen::Vector3d rpy;
 
             ss>>time;
             ss>>q.w();
@@ -96,6 +97,9 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
             ss>>acc(0);
             ss>>acc(1);
             ss>>acc(2);
+            ss>>rpy(0);
+            ss>>rpy(1);
+			ss>>rpy(2);
 
 
             data.timestamp = time;
@@ -103,6 +107,7 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
             data.imu_acc = acc;
             data.twb = t;
             data.Rwb = Eigen::Matrix3d(q);
+            data.rpy = rpy;
             pose.push_back(data);
 
         }

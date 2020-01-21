@@ -21,6 +21,9 @@ Eigen::Matrix3d euler2Rotation( Eigen::Vector3d  eulerAngles)
     RIb<< cy*cp ,   cy*sp*sr - sy*cr,   sy*sr + cy* cr*sp,
             sy*cp,    cy *cr + sy*sr*sp,  sp*sy*cr - cy*sr,
             -sp,         cp*sr,           cp*cr;
+
+//    Eigen::Vector3d euler_angles = RIb.eulerAngles ( 2,1,0 );
+//    std::cout<<"eulerAngles="<<eulerAngles.transpose()<<",euler_angles="<<euler_angles.transpose()<<std::endl;
     return RIb;
 }
 
