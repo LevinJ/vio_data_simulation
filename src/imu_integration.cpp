@@ -17,6 +17,13 @@ extern "C" {
 
 void propagate(char * src, char * dist, double x, double y, double z,
 		double roll, double pitch, double yaw, double vx, double vy, double vz){
+
+
+	//force xy plane movement
+	z=  0;
+	vz= 0 ;
+
+
 	cout<<"hello world"<<endl;
 	cout<<src<<endl;
 	cout<<dist<<endl;
@@ -78,10 +85,22 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	Eigen::Vector3d gw(0,0,-9.81);    // ENU frame
 	Eigen::Vector3d temp_a;
 	Eigen::Vector3d theta;
+	for (int i = 0; i < imudata.size(); ++i) {
+
+			//force xy plane movement
+			imudata[i].imu_gyro[0] = 0;
+			imudata[i].imu_gyro[1] = 0;
+			imudata[i].imu_acc[2] = 9.81;
+			imudata[i].twb[2] = 0;
+
+			double ax = imudata[i].imu_acc[1];
+			double ay = -imudata[i].imu_acc[0];
+
+			imudata[i].imu_acc[0] = ax;
+			imudata[i].imu_acc[1] = ay;
+	}
 	for (int i = 1; i < imudata.size(); ++i) {
-
 		MotionData imupose = imudata[i];
-
 		//delta_q = [1 , 1/2 * thetax , 1/2 * theta_y, 1/2 * theta_z]
   /*      Eigen::Quaterniond dq;
 		Eigen::Vector3d dtheta_half =  imupose.imu_gyro * dt /2.0;
