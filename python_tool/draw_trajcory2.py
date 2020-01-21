@@ -52,6 +52,12 @@ if show3d:
      
     ax.plot([position.iloc[0]['gt_x']], [position.iloc[0]['gt_y']],  [position.iloc[0]['gt_z']],'r.', label='start')
     ax.plot([position.iloc[500]['gt_x']], [position.iloc[500]['gt_y']], [position.iloc[500]['gt_z']],  'r.', label='start2') 
+    
+    for ind in inds:
+        xs = [position.iloc[ind]['gt_x'],position1.iloc[ind]['x']]
+        ys = [position.iloc[ind]['gt_y'],position1.iloc[ind]['y']]
+        zs = [position.iloc[ind]['gt_z'],position1.iloc[ind]['z']]
+        ax.plot(xs, ys,zs)
       
     
     ax.legend()
