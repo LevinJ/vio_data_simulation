@@ -11,3 +11,4 @@ bin/*.txt
 bin/data_gen
 bin/
 lib/
+temp/
