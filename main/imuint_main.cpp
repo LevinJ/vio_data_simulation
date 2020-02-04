@@ -31,8 +31,8 @@ int main(){
     double vx = 2.596471982;
     double vy= 1.204643166;
     double vz= -0.098029840738 ;
-    propagate("/home/levin/workspace/ros_projects/src/aiad_localization/scripts/slam/temp/1220_41/1220_41_imudata.csv",
-    		"/home/levin/workspace/ros_projects/src/aiad_localization/scripts/slam/temp/1220_41/1220_41_imudata_int.csv",
+    propagate("/home/levin/workspace/vio_course/vio_data_simulation/python_tool/slam/temp/1220_41/1220_41_imudata.csv",
+    		"/home/levin/workspace/vio_course/vio_data_simulation/python_tool/slam/temp/1220_41/1220_41_imudata_int.csv",
     		x, y, z,
     		roll, pitch, yaw,
 			vx, vy, vz);

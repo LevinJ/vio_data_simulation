@@ -13,7 +13,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 
 np.set_printoptions(suppress = True)
-filepath = '/home/levin/workspace/ros_projects/src/aiad_localization/scripts/slam/temp/1220_41'
+filepath = '/home/levin/workspace/vio_course/vio_data_simulation/python_tool/slam/temp/1220_41'
 
 
 position1 = []
@@ -66,12 +66,12 @@ if show3d:
     ax.set_zlabel('Z')
 else:
     ax = fig.gca()
-    ax.plot(position['gt_x'], position['gt_y'],  label='gt')
+    ax.plot(position['gt_x'], position['gt_y'],  label='ground truth')
     ax.plot(position1['x'], position1['y'], label='imu_int')
      
      
-    ax.plot([position.iloc[0]['gt_x']], [position.iloc[0]['gt_y']],  'r.', label='start')
-    ax.plot([position.iloc[500]['gt_x']], [position.iloc[500]['gt_y']],  'r.', label='start2')
+    ax.plot([position.iloc[0]['gt_x']], [position.iloc[0]['gt_y']],  'r.', label='start_1')
+    ax.plot([position.iloc[500]['gt_x']], [position.iloc[500]['gt_y']],  'r.', label='start_2')
     
     for ind in inds:
         xs = [position.iloc[ind]['gt_x'],position1.iloc[ind]['x']]
@@ -87,5 +87,5 @@ else:
 
 
 
-
+plt.gca().set_aspect('equal', adjustable='box')
 plt.show()

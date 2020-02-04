@@ -22,10 +22,13 @@ position1 = []
 quaterntions1 = []
 timestamp1 = []
 # data = np.loadtxt(filepath + '/1220_41_imudata_int.csv')
-data = pd.read_csv(filepath + '/vio.csv',index_col= False, sep=' ',header=None, names=['timestamp','x','y','z','qx','qy','qz','qw'])
-# timestamp1 = data[:,0]
-# quaterntions1 = data[:,[tx_index + 6, tx_index + 3, tx_index + 4, tx_index + 5]] # qw,qx,qy,qz
-position = data[['x','y','z']]
+position = pd.read_csv(filepath + '/vio.csv',index_col= False, sep=' ',header=None, names=['timestamp','x','y','z','qx','qy','qz','qw'])
+
+
+
+filepath = '/home/levin/workspace/vio_course/vio_data_simulation/python_tool/slam/temp/1220_41/1220_41_gt_pos.csv'
+gt_position = pd.read_csv(filepath,index_col= False, sep=' ',header=None, names=['timestamp','x','y','z','qx','qy','qz','qw'])
+
 
 
 
@@ -41,9 +44,9 @@ if show3d:
     ax = fig.gca(projection='3d')
      
       
-    ax.plot(position['x'], position['y'], position['z'], label='imu_int')  
+    ax.plot(position['x'], position['y'], position['z'], label='slam')  
     ax.scatter(position.iloc[0][0], position.iloc[0][1],  position.iloc[0][2],color='red', label='start')
-    ax.scatter(position.iloc[start_id][0], position.iloc[start_id][1],  position.iloc[start_id][2],color='red', label='start2')
+    ax.scatter(position.iloc[start_id][0], position.iloc[start_id][1],  position.iloc[start_id][2],color='green', label='start2')
      
     ax.legend()
     ax.set_xlabel('X')
@@ -52,11 +55,15 @@ if show3d:
 else:
     ax = fig.gca()
      
-    ax.plot(position['x'], position['y'], label='imu_int')   
+    ax.plot(position['x'], position['y'], label='slam')   
+    ax.plot(position.iloc[0]['x'], position.iloc[0]['y'],  'r.', label='start_1')
+    ax.plot(position.iloc[start_id]['x'], position.iloc[start_id]['y'],  'g.', label='start_2')
     
-    ax.plot(position.iloc[0][0], position.iloc[0][1],  'r.', label='start')
-    ax.plot(position.iloc[start_id][0], position.iloc[start_id][1],  'r.', label='start2')
-  
+    ax.plot(gt_position['x'], gt_position['y'], label='ground truth')   
+    ax.plot(gt_position.iloc[0]['x'], gt_position.iloc[0]['y'],  'r.', label='start_1')
+    ax.plot(gt_position.iloc[start_id]['x'], gt_position.iloc[start_id]['y'],  'g.', label='start_2')
+    
+
     
     ax.legend()
     ax.set_xlabel('X')
@@ -65,5 +72,5 @@ else:
 
 
 
-
+plt.gca().set_aspect('equal', adjustable='box')
 plt.show()

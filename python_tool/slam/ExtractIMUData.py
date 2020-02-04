@@ -85,7 +85,8 @@ class ExtactIMUData(PlotData):
         df = pd.concat([df, df_pose.reset_index(drop=True)], axis = 1)
         df['time_stamp'] = df['time_secs'] - df['time_secs'][0] + df['time_nsecs']
 
-        cols =['time_stamp', 'q_w','q_x','q_y','q_z','x','y','z', 'angvelx','angvely', 'angvelz','accelx' ,'accely' ,'accelz' ,'time_secs','time_nsecs' ,'vx', 'vy' ,'vz', 'ax', 'ay', 'az','roll', 'pitch', 'yaw' ]
+        cols =['time_stamp', 'qw','qx','qy','qz','x','y','z', 'angvelx','angvely', 'angvelz','accelx' ,'accely' ,'accelz' ,'roll', 'pitch', 'yaw' ,'time_secs','time_nsecs' ,'vx', 'vy' ,'vz', 'ax', 'ay', 'az']
+        df = df[cols]
         df.to_csv(csv_filename,  header=None,sep=' ', index=False, columns=cols) 
 #         df.to_csv(csv_filename) 
         print("file {} saved".format(csv_filename)) 
