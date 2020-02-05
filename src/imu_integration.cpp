@@ -20,8 +20,8 @@ void propagate(char * src, char * dist, double x, double y, double z,
 
 
 	//force xy plane movement
-	z=  0;
-	vz= 0 ;
+//	z=  0;
+//	vz= 0 ;
 
 
 	cout<<"hello world"<<endl;
@@ -88,10 +88,10 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	for (int i = 0; i < imudata.size(); ++i) {
 
 			//force xy plane movement
-			imudata[i].imu_gyro[0] = 0;
-			imudata[i].imu_gyro[1] = 0;
-			imudata[i].imu_acc[2] = 9.81;
-			imudata[i].twb[2] = 0;
+//			imudata[i].imu_gyro[0] = 0;
+//			imudata[i].imu_gyro[1] = 0;
+//			imudata[i].imu_acc[2] = 9.81;
+//			imudata[i].twb[2] = 0;
 
 			imudata[i].rpy[2] = -(90 - imudata[i].rpy[2]);
 
