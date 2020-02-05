@@ -93,11 +93,13 @@ void propagate(char * src, char * dist, double x, double y, double z,
 			imudata[i].imu_acc[2] = 9.81;
 			imudata[i].twb[2] = 0;
 
-			double ax = imudata[i].imu_acc[1];
-			double ay = -imudata[i].imu_acc[0];
+			imudata[i].rpy[2] = -(90 - imudata[i].rpy[2]);
 
-			imudata[i].imu_acc[0] = ax;
-			imudata[i].imu_acc[1] = ay;
+//			double ax = imudata[i].imu_acc[1];
+//			double ay = -imudata[i].imu_acc[0];
+//
+//			imudata[i].imu_acc[0] = ax;
+//			imudata[i].imu_acc[1] = ay;
 	}
 	for (int i = 1; i < imudata.size(); ++i) {
 		MotionData imupose = imudata[i];

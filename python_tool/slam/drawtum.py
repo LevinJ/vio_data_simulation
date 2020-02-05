@@ -13,7 +13,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
 
 np.set_printoptions(suppress = True)
-filepath = '/home/levin/output/1220_41_mono_imu'
+# filepath = '/home/levin/output/1220_41_mono_imu'
+filepath = '/home/levin/output/1220_41_stereo'
 
 
 
@@ -38,7 +39,7 @@ fig = plt.figure()
 
 show3d = False
 
-start_id = 50
+start_id = 200
 
 if show3d:
     ax = fig.gca(projection='3d')
@@ -56,12 +57,12 @@ else:
     ax = fig.gca()
      
     ax.plot(position['x'], position['y'], label='slam')   
-    ax.plot(position.iloc[0]['x'], position.iloc[0]['y'],  'r.', label='start_1')
-    ax.plot(position.iloc[start_id]['x'], position.iloc[start_id]['y'],  'g.', label='start_2')
+#     ax.plot(position.iloc[0]['x'], position.iloc[0]['y'],  'r.', label='start_1')
+#     ax.plot(position.iloc[start_id]['x'], position.iloc[start_id]['y'],  'g.', label='start_2')
     
     ax.plot(gt_position['x'], gt_position['y'], label='ground truth')   
-    ax.plot(gt_position.iloc[0]['x'], gt_position.iloc[0]['y'],  'r.', label='start_1')
-    ax.plot(gt_position.iloc[start_id]['x'], gt_position.iloc[start_id]['y'],  'g.', label='start_2')
+#     ax.plot(gt_position.iloc[0]['x'], gt_position.iloc[0]['y'],  'r.', label='start_1')
+#     ax.plot(gt_position.iloc[start_id]['x'], gt_position.iloc[start_id]['y'],  'g.', label='start_2')
     
 
     

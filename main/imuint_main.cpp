@@ -27,7 +27,7 @@ int main(){
     double z=  -0.0711993342265;
     double roll = 0 ;
     double pitch = 0;
-    double yaw =  24.9017483279 /180 * 3.14;
+    double yaw =  -(90 - 24.9017483279) /180 * 3.14;
     double vx = 2.596471982;
     double vy= 1.204643166;
     double vz= -0.098029840738 ;
