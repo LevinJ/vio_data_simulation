@@ -15,6 +15,48 @@ using namespace std;
 
 extern "C" {
 
+static Eigen::Vector3d R2ypr(const Eigen::Matrix3d &R)
+    {
+        Eigen::Vector3d n = R.col(0);
+        Eigen::Vector3d o = R.col(1);
+        Eigen::Vector3d a = R.col(2);
+
+        Eigen::Vector3d ypr(3);
+        double y = atan2(n(1), n(0));
+        double p = atan2(-n(2), n(0) * cos(y) + n(1) * sin(y));
+        double r = atan2(a(0) * sin(y) - a(1) * cos(y), -o(0) * sin(y) + o(1) * cos(y));
+        ypr(0) = y;
+        ypr(1) = p;
+        ypr(2) = r;
+
+        return ypr / M_PI * 180.0;
+    }
+Eigen::Matrix3d ypr2R(const Eigen::Vector3d &ypr)
+    {
+//        typedef typename double Scalar_t;
+
+        double y = ypr(0) / 180.0 * M_PI;
+        double p = ypr(1) / 180.0 * M_PI;
+        double r = ypr(2) / 180.0 * M_PI;
+
+        Eigen::Matrix<double, 3, 3> Rz;
+        Rz << cos(y), -sin(y), 0,
+            sin(y), cos(y), 0,
+            0, 0, 1;
+
+        Eigen::Matrix<double, 3, 3> Ry;
+        Ry << cos(p), 0., sin(p),
+            0., 1., 0.,
+            -sin(p), 0., cos(p);
+
+        Eigen::Matrix<double, 3, 3> Rx;
+        Rx << 1., 0., 0.,
+            0., cos(r), -sin(r),
+            0., sin(r), cos(r);
+
+        return Rz * Ry * Rx;
+    }
+
 void propagate(char * src, char * dist, double x, double y, double z,
 		double roll, double pitch, double yaw, double vx, double vy, double vz){
 
@@ -72,7 +114,8 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	Eigen::Vector3d dp(vx,  vy, vz);
 	Eigen::Vector3d position( x, y,  z);
 	Eigen::Vector3d eulerAngles(roll , pitch, yaw );
-	Eigen::Matrix3d Rwb = euler2Rotation(eulerAngles);
+	Eigen::Matrix3d Rwb = ypr2R(Eigen::Vector3d(yaw* 180/M_PI, pitch* 180/M_PI,roll* 180/M_PI));
+//	Eigen::Matrix3d Rwb = euler2Rotation(eulerAngles);
 
 	imuGen.init_velocity_ = dp;
 	imuGen.init_twb_ = position;
@@ -142,8 +185,9 @@ void propagate(char * src, char * dist, double x, double y, double z,
 		Vw = Vw + acc_w * dt;
 
 		Eigen::Matrix3d Rwb(Qwb);
-		Eigen::Vector3d euler_angles = Rwb.eulerAngles ( 2,1,0 );
-		euler_angles = euler_angles * 180/3.14;
+		Eigen::Vector3d euler_angles = R2ypr(Rwb);
+//		Eigen::Vector3d euler_angles = Rwb.eulerAngles ( 2,1,0 );
+//		euler_angles = euler_angles * 180/3.14;
 
 
 
