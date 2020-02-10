@@ -65,6 +65,7 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
         return;
     }
 
+    bool first_line = true;
     while (!f.eof()) {
 
         std::string s;
@@ -74,6 +75,10 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
         {
             std::stringstream ss;
             ss << s;
+            if(first_line){
+            	first_line = false;
+            	continue;
+            }
 
             MotionData data;
             double time;
@@ -100,6 +105,7 @@ void LoadPose(std::string filename, std::vector<MotionData>& pose)
             ss>>rpy(0);
             ss>>rpy(1);
 			ss>>rpy(2);
+			ss >> data.seq;
 
 
             data.timestamp = time;

@@ -106,6 +106,7 @@ void propagate(char * src, char * dist, double x, double y, double z,
 					   <<"ax"<<","
 					   <<"ay"<<","
 					   <<"az"<<","
+					   <<"seq"<<","
 
 
 
@@ -114,8 +115,8 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	Eigen::Vector3d dp(vx,  vy, vz);
 	Eigen::Vector3d position( x, y,  z);
 	Eigen::Vector3d eulerAngles(roll , pitch, yaw );
-	Eigen::Matrix3d Rwb = ypr2R(Eigen::Vector3d(yaw* 180/M_PI, pitch* 180/M_PI,roll* 180/M_PI));
-//	Eigen::Matrix3d Rwb = euler2Rotation(eulerAngles);
+//	Eigen::Matrix3d Rwb = ypr2R(Eigen::Vector3d(yaw* 180/M_PI, pitch* 180/M_PI,roll* 180/M_PI));
+	Eigen::Matrix3d Rwb = euler2Rotation(eulerAngles);
 
 	imuGen.init_velocity_ = dp;
 	imuGen.init_twb_ = position;
@@ -179,6 +180,9 @@ void propagate(char * src, char * dist, double x, double y, double z,
 		Eigen::Quaterniond Qwb_next = Qwb * dq;
 		acc_w = 1.0/2 *(Qwb * (imupose.imu_acc) + Qwb_next * (imudata[i-1].imu_acc)) + gw;
 
+		cout<<"acc_w:"<<acc_w<<endl;
+		cout<<"v_w:"<<Vw<<endl;
+
 		/// imu 动力学模型, consant turn rate, constant acceleration, CTRA
 		Qwb = Qwb * dq;
 		Pwb = Pwb + Vw * dt + 0.5 * dt * dt * acc_w;
@@ -216,6 +220,7 @@ void propagate(char * src, char * dist, double x, double y, double z,
 				   <<imupose.imu_acc[0]<<","
 				   <<imupose.imu_acc[1]<<","
 				   <<imupose.imu_acc[2]<<","
+				   <<imupose.seq<<","
 
 
 				   <<std::endl;
@@ -246,6 +251,8 @@ void propagate(char * src, char * dist, double x, double y, double z,
 						   <<imupose.imu_acc[0]<<","
 						   <<imupose.imu_acc[1]<<","
 						   <<imupose.imu_acc[2]<<","
+						   <<"seq:"
+						   <<imupose.seq<<","
 
 						   <<std::endl;
 

@@ -26,6 +26,7 @@ struct MotionData
 
     Eigen::Vector3d imu_velocity;
     Eigen::Vector3d rpy;
+    int seq;
 };
 
 // euler2Rotation:   body frame to interitail frame
