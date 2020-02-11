@@ -100,12 +100,18 @@ void propagate(char * src, char * dist, double x, double y, double z,
 					   <<"gt_y"<<","
 					   <<"gt_z"<<","
 
-					   <<"wx"<<","
-					   <<"wy"<<","
-					   <<"wz"<<","
-					   <<"ax"<<","
-					   <<"ay"<<","
-					   <<"az"<<","
+					   <<"wx_b"<<","
+					   <<"wy_b"<<","
+					   <<"wz_b"<<","
+					   <<"ax_b"<<","
+					   <<"ay_b"<<","
+					   <<"az_b"<<","
+					   <<"ax_w"<<","
+					   <<"ay_w"<<","
+					   <<"az_w"<<","
+					   <<"vx_w"<<","
+					   <<"vy_w"<<","
+					   <<"vz_w"<<","
 					   <<"seq"<<","
 
 
@@ -147,6 +153,9 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	}
 	for (int i = 1; i < imudata.size(); ++i) {
 		MotionData imupose = imudata[i];
+		if(imupose.seq == 2861){
+			cout<<"stop here"<<endl;
+		}
 		//delta_q = [1 , 1/2 * thetax , 1/2 * theta_y, 1/2 * theta_z]
   /*      Eigen::Quaterniond dq;
 		Eigen::Vector3d dtheta_half =  imupose.imu_gyro * dt /2.0;
@@ -162,8 +171,6 @@ void propagate(char * src, char * dist, double x, double y, double z,
 		Pwb = Pwb + Vw * dt + 0.5 * dt * dt * acc_w;
 		Vw = Vw + acc_w * dt;
 		*/
-
-
 		/// 中值积分
 		Eigen::Quaterniond dq;
 		Eigen::Vector3d omega;
@@ -220,6 +227,12 @@ void propagate(char * src, char * dist, double x, double y, double z,
 				   <<imupose.imu_acc[0]<<","
 				   <<imupose.imu_acc[1]<<","
 				   <<imupose.imu_acc[2]<<","
+				   <<acc_w[0]<<","
+				   <<acc_w[1]<<","
+				   <<acc_w[2]<<","
+				   <<Vw[0]<<","
+				   <<Vw[1]<<","
+				   <<Vw[2]<<","
 				   <<imupose.seq<<","
 
 

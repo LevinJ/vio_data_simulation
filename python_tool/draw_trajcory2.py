@@ -16,27 +16,17 @@ np.set_printoptions(suppress = True)
 filepath = '/home/levin/workspace/vio_course/vio_data_simulation/python_tool/slam/temp/1220_41'
 
 
-position1 = []
+position_est = []
 quaterntions1 = []
 timestamp1 = []
 # data = np.loadtxt(filepath + '/1220_41_imudata_int.csv')
 data = pd.read_csv(filepath + '/1220_41_imudata_int.csv',index_col= False)
-# timestamp1 = data[:,0]
-# quaterntions1 = data[:,[tx_index + 6, tx_index + 3, tx_index + 4, tx_index + 5]] # qw,qx,qy,qz
-position1 = data[['x','y','z']]
-position = data[['gt_x','gt_y','gt_z']]
+position_est = data[['x','y','z']]
+position_gt = data[['gt_x','gt_y','gt_z']]
 
 
-inds = np.arange(0, len(data), 50)
+inds = np.arange(0, len(data), 500)
 
-# cam_pose_opt_o_0   cam_pose_opt_o_0
-# position2 = []
-# quaterntions2 = []
-# timestamp2 = []
-# data = np.loadtxt(filepath + '/imu_int_pose_noise.txt')
-# # timestamp2 = data[:,0]
-# # quaterntions2 = data[:,[tx_index + 6, tx_index + 3, tx_index + 4, tx_index + 5]] # qw,qx,qy,qz
-# position2 = data[:,[tx_index, tx_index + 1, tx_index + 2]]
 
 
 ### plot 3d
@@ -47,16 +37,16 @@ show3d = False
 if show3d:
     ax = fig.gca(projection='3d')
      
-    ax.plot(position['gt_x'], position['gt_y'],  position['gt_z'],label='gt')
-    ax.plot(position1['x'], position1['y'], position1['z'], label='imu_int')
+    ax.plot(position_gt['gt_x'], position_gt['gt_y'],  position_gt['gt_z'],label='gt')
+    ax.plot(position_est['x'], position_est['y'], position_est['z'], label='imu_int')
      
-#     ax.plot([position.iloc[0]['gt_x']], [position.iloc[0]['gt_y']],  [position.iloc[0]['gt_z']],'r.', label='start')
-#     ax.plot([position.iloc[500]['gt_x']], [position.iloc[500]['gt_y']], [position.iloc[500]['gt_z']],  'r.', label='start2') 
+#     ax.plot([position_gt.iloc[0]['gt_x']], [position_gt.iloc[0]['gt_y']],  [position_gt.iloc[0]['gt_z']],'r.', label='start')
+#     ax.plot([position_gt.iloc[500]['gt_x']], [position_gt.iloc[500]['gt_y']], [position_gt.iloc[500]['gt_z']],  'r.', label='start2') 
 #     
 #     for ind in inds:
-#         xs = [position.iloc[ind]['gt_x'],position1.iloc[ind]['x']]
-#         ys = [position.iloc[ind]['gt_y'],position1.iloc[ind]['y']]
-#         zs = [position.iloc[ind]['gt_z'],position1.iloc[ind]['z']]
+#         xs = [position_gt.iloc[ind]['gt_x'],position_est.iloc[ind]['x']]
+#         ys = [position_gt.iloc[ind]['gt_y'],position_est.iloc[ind]['y']]
+#         zs = [position_gt.iloc[ind]['gt_z'],position_est.iloc[ind]['z']]
 #         ax.plot(xs, ys,zs)
       
     
@@ -66,18 +56,18 @@ if show3d:
     ax.set_zlabel('Z')
 else:
     ax = fig.gca()
-    ax.plot(position['gt_x'], position['gt_y'],  label='ground truth')
-    ax.plot(position1['x'], position1['y'], label='imu_int')
+    ax.plot(position_gt['gt_x'], position_gt['gt_y'],  label='ground truth')
+    ax.plot(position_est['x'], position_est['y'], label='imu_int')
      
      
-    ax.plot([position.iloc[0]['gt_x']], [position.iloc[0]['gt_y']],  'r.', label='start_1')
-    ax.plot([position.iloc[500]['gt_x']], [position.iloc[500]['gt_y']],  'r.', label='start_2')
-    
+#     ax.plot([position_gt.iloc[0]['gt_x']], [position_gt.iloc[0]['gt_y']],  'r.', label='start_1')
+#     ax.plot([position_gt.iloc[5000]['gt_x']], [position_gt.iloc[5000]['gt_y']],  'g.', label='start_2')
+     
     for ind in inds:
-        xs = [position.iloc[ind]['gt_x'],position1.iloc[ind]['x']]
-        ys = [position.iloc[ind]['gt_y'],position1.iloc[ind]['y']]
+        xs = [position_gt.iloc[ind]['gt_x'],position_est.iloc[ind]['x']]
+        ys = [position_gt.iloc[ind]['gt_y'],position_est.iloc[ind]['y']]
         ax.plot(xs, ys)
-    
+#     
     
     
     ax.legend()

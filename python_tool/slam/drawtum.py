@@ -14,7 +14,8 @@ import pandas as pd
 
 np.set_printoptions(suppress = True)
 # filepath = '/home/levin/output/1220_41_mono_imu'
-filepath = '/home/levin/output/1220_41_stereo'
+# filepath = '/home/levin/output/1220_41_stereo'
+filepath = '/home/levin/output'
 
 
 

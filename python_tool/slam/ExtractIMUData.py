@@ -19,8 +19,19 @@ class ExtactIMUData(PlotData):
         if os.path.exists(csv_filename):
             print("file {} already exists".format(csv_filename)) 
             return
-        min_id = 7745
-        max_Id = 9525
+#         min_id = 7745
+#         max_Id = 9525
+#         min_id = 0
+#         max_Id = 12194
+        
+        #first straight line    
+#         min_id = 3940
+#         max_Id = 7745
+        #same as vins
+        min_id = 4408
+        max_Id = 12194
+        
+        
         df = self.df_imu[(self.df_imu['seq']>min_id) & (self.df_imu['seq']<max_Id)].reset_index(drop=True)
         
         
@@ -85,9 +96,9 @@ class ExtactIMUData(PlotData):
         df = pd.concat([df, df_pose.reset_index(drop=True)], axis = 1)
         df['time_stamp'] = df['time_secs'] - df['time_secs'][0] + df['time_nsecs']
 
-        cols =['time_stamp', 'qw','qx','qy','qz','x','y','z', 'angvelx','angvely', 'angvelz','accelx' ,'accely' ,'accelz' ,'roll', 'pitch', 'yaw' ,'time_secs','time_nsecs' ,'vx', 'vy' ,'vz', 'ax', 'ay', 'az']
+        cols =['time_stamp', 'qw','qx','qy','qz','x','y','z', 'angvelx','angvely', 'angvelz','accelx' ,'accely' ,'accelz' ,'roll', 'pitch', 'yaw' ,'seq','time_secs','time_nsecs' ,'vx', 'vy' ,'vz', 'ax', 'ay', 'az']
         df = df[cols]
-        df.to_csv(csv_filename,  header=None,sep=' ', index=False, columns=cols) 
+        df.to_csv(csv_filename,  sep=' ', index=False, columns=cols) 
 #         df.to_csv(csv_filename) 
         print("file {} saved".format(csv_filename)) 
         return
