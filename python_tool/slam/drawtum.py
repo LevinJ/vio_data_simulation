@@ -11,7 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-
+from  sklearn.neighbors import KDTree
 np.set_printoptions(suppress = True)
 # filepath = '/home/levin/output/1220_41_mono_imu'
 # filepath = '/home/levin/output/1220_41_stereo'
@@ -33,7 +33,14 @@ gt_position = pd.read_csv(filepath,index_col= False, sep=' ',header=None, names=
 
 
 
+gtpos_kdtree = KDTree(np.array(gt_position['timestamp']).reshape(-1,1), leaf_size=2)
+target_time = np.array(position['timestamp']).reshape(-1,1)
+ds, inds = gtpos_kdtree.query(target_time, k=1)
 
+gtpos_inds = inds.flatten()
+pos_inds = np.arange(len(position))
+
+inds = np.arange(0, len(pos_inds), 15)
 
 ### plot 3d
 fig = plt.figure()
@@ -64,7 +71,12 @@ else:
     ax.plot(gt_position['x'], gt_position['y'], label='ground truth')   
 #     ax.plot(gt_position.iloc[0]['x'], gt_position.iloc[0]['y'],  'r.', label='start_1')
 #     ax.plot(gt_position.iloc[start_id]['x'], gt_position.iloc[start_id]['y'],  'g.', label='start_2')
-    
+    for ind, gt_ind in zip(pos_inds, gtpos_inds):
+        if not ind in inds:
+            continue
+        xs = [gt_position.iloc[gt_ind]['x'],position.iloc[ind]['x']]
+        ys = [gt_position.iloc[gt_ind]['y'],position.iloc[ind]['y']]
+        ax.plot(xs, ys)
 
     
     ax.legend()
