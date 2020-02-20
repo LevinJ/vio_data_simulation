@@ -28,7 +28,7 @@ class ExtactIMUData(PlotData):
 #         min_id = 3940
 #         max_Id = 7745
         #same as vins
-        min_id = 4408
+        min_id = 0
         max_Id = 12194
         
         
@@ -94,7 +94,8 @@ class ExtactIMUData(PlotData):
         df_pose = df_pose[['x', 'y', 'z', 'qw','qx', 'qy', 'qz', 'roll', 'pitch', 'yaw', 'vx','vy','vz', 'ax', 'ay', 'az']]
         
         df = pd.concat([df, df_pose.reset_index(drop=True)], axis = 1)
-        df['time_stamp'] = df['time_secs'] - df['time_secs'][0] + df['time_nsecs']
+#         df['time_stamp'] = df['time_secs'] - df['time_secs'][0] + df['time_nsecs']
+        df['time_stamp'] = df['time_secs']  + df['time_nsecs']
 
         cols =['time_stamp', 'qw','qx','qy','qz','x','y','z', 'angvelx','angvely', 'angvelz','accelx' ,'accely' ,'accelz' ,'roll', 'pitch', 'yaw' ,'seq','time_secs','time_nsecs' ,'vx', 'vy' ,'vz', 'ax', 'ay', 'az']
         df = df[cols]

@@ -63,10 +63,10 @@ else:
 #     ax.plot([position_gt.iloc[0]['gt_x']], [position_gt.iloc[0]['gt_y']],  'r.', label='start_1')
 #     ax.plot([position_gt.iloc[5000]['gt_x']], [position_gt.iloc[5000]['gt_y']],  'g.', label='start_2')
      
-    for ind in inds:
-        xs = [position_gt.iloc[ind]['gt_x'],position_est.iloc[ind]['x']]
-        ys = [position_gt.iloc[ind]['gt_y'],position_est.iloc[ind]['y']]
-        ax.plot(xs, ys)
+#     for ind in inds:
+#         xs = [position_gt.iloc[ind]['gt_x'],position_est.iloc[ind]['x']]
+#         ys = [position_gt.iloc[ind]['gt_y'],position_est.iloc[ind]['y']]
+#         ax.plot(xs, ys)
 #     
     
     

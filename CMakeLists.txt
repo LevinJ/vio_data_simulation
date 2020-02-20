@@ -36,9 +36,12 @@ ${Sophus_LIBRARIES}
 ADD_EXECUTABLE(data_gen main/gener_alldata.cpp src/param.h src/param.cpp src/utilities.h src/utilities.cpp src/imu.h src/imu.cpp src/imu_integration.cpp)
 TARGET_LINK_LIBRARIES (data_gen ${LINK_LIBS})
 
-file(GLOB SOURCES "./src/*.cpp")
-add_library(imu_integration SHARED ${SOURCES})
+#file(GLOB SOURCES "./src/*.cpp")
+#add_library(imu_integration SHARED ${SOURCES})
 
 ADD_EXECUTABLE(data_integration main/imuint_main.cpp src/param.h src/param.cpp src/utilities.h src/utilities.cpp src/imu.h src/imu.cpp src/imu_integration.cpp)
 TARGET_LINK_LIBRARIES (data_gen ${LINK_LIBS})
+
+add_executable(world2body src/world2body.cpp)
+add_executable(body2world src/body2world.cpp)
 

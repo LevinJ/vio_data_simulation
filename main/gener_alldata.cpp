@@ -73,11 +73,11 @@ void CreatePointsLines(Points& points, Lines& lines)
     // save points
     save_points("all_points.txt", points);
 }
-extern "C" {
+//extern "C" {
 
-void propagate(char * src, char * dist, double x, double y, double z,
-		double roll, double pitch, double yaw, double vx, double vy, double vz);
-}
+//void propagate(char * src, char * dist, double x, double y, double z,
+//		double roll, double pitch, double yaw, double vx, double vy, double vz);
+//}
 int main(){
 
     // Eigen::Quaterniond Qwb;
@@ -140,8 +140,8 @@ int main(){
     double vx = imuGen.init_velocity_[0];
     double vy= imuGen.init_velocity_[1];
     double vz= imuGen.init_velocity_[2];
-    propagate("imu_pose.txt", "imu_int_pose2.txt", x, y, z,
-    		roll, pitch, yaw, vx, vy, vz);
+//    propagate("imu_pose.txt", "imu_int_pose2.txt", x, y, z,
+//    		roll, pitch, yaw, vx, vy, vz);
 
     // cam pose
     std::vector< MotionData > camdata;

@@ -58,7 +58,7 @@ Eigen::Matrix3d ypr2R(const Eigen::Vector3d &ypr)
     }
 
 void propagate(char * src, char * dist, double x, double y, double z,
-		double roll, double pitch, double yaw, double vx, double vy, double vz){
+		double roll, double pitch, double yaw, double vx, double vy, double vz, double start_time_stamp){
 
 
 	//force xy plane movement
@@ -153,6 +153,9 @@ void propagate(char * src, char * dist, double x, double y, double z,
 	}
 	for (int i = 1; i < imudata.size(); ++i) {
 		MotionData imupose = imudata[i];
+		if (imupose.timestamp < start_time_stamp){
+			continue;
+		}
 		if(imupose.seq == 2861){
 			cout<<"stop here"<<endl;
 		}
