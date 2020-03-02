@@ -115,4 +115,18 @@ def drawCoordinateFrame( ax, rpy, t):
     ax.add_artist( x)    
     ax.add_artist( y )
     ax.add_artist( z )
+    
+    #add the world frame
+    o1 = o
+    x1 =x0
+    y1 = y0
+    z1 = z0
+    x = Arrow3D(   [o1[0], x1[0]],    [o1[1], x1[1]],     [o1[2], x1[2]] ,  mutation_scale=20, arrowstyle='-|>', color='r')
+    y = Arrow3D(   [o1[0], y1[0]],    [o1[1], y1[1]],     [o1[2], y1[2]] ,  mutation_scale=20, arrowstyle='-|>', color='g')
+    z = Arrow3D(   [o1[0], z1[0]],    [o1[1], z1[1]],     [o1[2], z1[2]] ,  mutation_scale=20, arrowstyle='-|>', color='b')
+    
+    # draw
+    ax.add_artist( x)    
+    ax.add_artist( y )
+    ax.add_artist( z )
 
