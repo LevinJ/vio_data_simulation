@@ -124,7 +124,7 @@ MotionData IMU::MotionModel(double t)
 void IMU::testImu(std::string src, std::string dist)
 {
     std::vector<MotionData>imudata;
-    LoadPose(src,imudata);
+    LoadPose2(src,imudata);
 
     std::ofstream save_points;
     save_points.open(dist);

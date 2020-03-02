@@ -25,7 +25,7 @@ position = np.loadtxt(filepath + '/imu_pose.txt', usecols = (tx_index, tx_index 
 position1 = []
 quaterntions1 = []
 timestamp1 = []
-data = np.loadtxt(filepath + '/imu_int_pose3.txt')
+data = np.loadtxt(filepath + '/imu_int_pose.txt')
 # timestamp1 = data[:,0]
 # quaterntions1 = data[:,[tx_index + 6, tx_index + 3, tx_index + 4, tx_index + 5]] # qw,qx,qy,qz
 position1 = data[:,[tx_index, tx_index + 1, tx_index + 2]]

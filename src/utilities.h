@@ -27,6 +27,8 @@ void save_lines(std::string filename,
 
 void LoadPose(std::string filename, std::vector<MotionData>& pose);
 
+void LoadPose2(std::string filename, std::vector<MotionData>& pose);
+
 // save imu body data
 void save_Pose(std::string filename, std::vector<MotionData> pose);
 
