@@ -127,6 +127,7 @@ int main(){
     imuGen.init_Rwb_ = imudata.at(0).Rwb;
     save_Pose("imu_pose.txt", imudata);
     save_Pose("imu_pose_noise.txt", imudata_noise);
+    save_Pose_asTUM("imu_pose_tum.txt",imudata);
 
     imuGen.testImu("imu_pose.txt", "imu_int_pose.txt");     // test the imu data, integrate the imu data to generate the imu trajecotry
     imuGen.testImu("imu_pose_noise.txt", "imu_int_pose_noise.txt");
