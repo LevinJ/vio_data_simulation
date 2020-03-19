@@ -36,6 +36,28 @@ position = []
 quaterntions = []
 timestamp = []
 qw_index = 1
+
+trj_length = 0;
+first_point = True
+last_point = None;
+def cal_length(x, y, z):
+    global trj_length
+    global first_point
+    global last_point
+    if first_point:
+        last_point = (x,y,z)
+        first_point = False
+        return 
+    prevx, prevy, prevz = last_point
+    temp = [prevx-x, prevy-y, prevz - z]
+    temp = np.linalg.norm(temp)
+    print(temp)
+    
+    trj_length += temp
+    
+    last_point = (x,y,z) 
+    
+    return
 with open(filepath + '/cam_pose.txt', 'r') as f:   #   imu_circle   imu_spline
 
     data = f.readlines()  #txt中所有字符串读入data    
@@ -45,9 +67,10 @@ with open(filepath + '/cam_pose.txt', 'r') as f:   #   imu_circle   imu_spline
 
         #timestamp.append( numbers_float[0])        
         quaterntions.append( [numbers_float[qw_index], numbers_float[qw_index+1],numbers_float[qw_index+2],numbers_float[qw_index+3]   ] )   # qw,qx,qy,qz
-        position.append( [numbers_float[qw_index+4], numbers_float[qw_index+5],numbers_float[qw_index+6] ] )              
+        position.append( [numbers_float[qw_index+4], numbers_float[qw_index+5],numbers_float[qw_index+6] ] )   
+        cal_length(numbers_float[qw_index+4], numbers_float[qw_index+5],numbers_float[qw_index+6])           
 
-
+print("overall trajectory length={}".format(trj_length))
 ## plot 3d        
 fig = plt.figure()
 plt.ion()
