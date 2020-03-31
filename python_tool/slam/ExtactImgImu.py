@@ -47,7 +47,7 @@ class ExtactImgImu(PlotData):
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
        
         img_path = '{}/imgs/{}.png'.format(self.datafolder, timestamp)
-#         cv2.imwrite(img_path, cv_image)
+        cv2.imwrite(img_path, cv_image)
         
         for k in self.meta_data_dict_cam.keys():
             self.meta_data_dict_cam[k].append(eval(k))
@@ -71,6 +71,7 @@ class ExtactImgImu(PlotData):
        
         if not os.path.exists(datafolder):
             os.makedirs(datafolder)
+            os.makedirs(datafolder + "/imgs")
         
         
         
