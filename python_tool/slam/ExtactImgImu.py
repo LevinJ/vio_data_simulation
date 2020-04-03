@@ -32,21 +32,33 @@ class ExtactImgImu(PlotData):
     
     
     def process_imu(self, msg):
+        if msg.header.stamp.secs < self.start_time:
+            return
         
         angvelx,angvely,angvelz = [msg.angular_velocity.x, msg.angular_velocity.y,msg.angular_velocity.z]
         accelx,accely,accelz = [msg.linear_acceleration.x, msg.linear_acceleration.y,msg.linear_acceleration.z]
-        timestamp = "{}.{}".format(msg.header.stamp.secs,  msg.header.stamp.nsecs)
+        time_secs = msg.header.stamp.secs
+        time_nsecs = msg.header.stamp.nsecs * 1e-9
+        timestamp = time_secs + time_nsecs
+        timestamp = "{:.6f}".format(timestamp)
         
         for k in self.meta_data_dict_imu.keys():
             self.meta_data_dict_imu[k].append(eval(k))
         return
     def process_cam(self, msg):
-
-        timestamp = "{}.{}".format(msg.header.stamp.secs,  msg.header.stamp.nsecs)
+        if msg.header.stamp.secs < self.start_time:
+            return
+        
+        time_secs = msg.header.stamp.secs
+        time_nsecs = msg.header.stamp.nsecs * 1e-9
+        timestamp = time_secs + time_nsecs
+        timestamp = "{:.6f}".format(timestamp)
         
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
        
         img_path = '{}/imgs/{}.png'.format(self.datafolder, timestamp)
+        if not os.path.exists(self.datafolder + "/imgs"):
+            os.makedirs(self.datafolder + "/imgs")
         cv2.imwrite(img_path, cv_image)
         
         for k in self.meta_data_dict_cam.keys():
@@ -64,6 +76,7 @@ class ExtactImgImu(PlotData):
     
     
     def run(self):   
+        self.start_time = 1576825198;
         file_name = "1220_41"
         bag = rosbag.Bag(os.environ['HOME'] + '/bagfiles/novatel/' + file_name + ".bag")  
         datafolder = "{}/bagfiles/novatel/extracted/{}".format(os.environ['HOME'],  file_name)
