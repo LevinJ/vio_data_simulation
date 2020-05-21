@@ -10,6 +10,10 @@ using Eigen::MatrixXd;
 using Eigen::Matrix3d;
 using Eigen::Vector3d;
 using Eigen::VectorXd;
+using Eigen::Matrix4d;
+
+
+
 
 template <typename Derived>
      Eigen::Matrix<typename Derived::Scalar, 3, 3> ypr2R(const Eigen::MatrixBase<Derived> &ypr)
@@ -66,6 +70,21 @@ Matrix3d getvb2gb(){
 	}
 	return R;
 }
+Matrix4d constructT(Matrix3d &R, Vector3d &t){
+	Matrix4d T( Matrix4d::Zero());
+	T.block(0, 0, 3, 3).noalias() = R;
+	T.block(0, 3, 3, 1).noalias() = t;
+	T(3,3) = 1;
+	return T;
+}
+Matrix4d getvb2gbT(){
+	//compute the transform from base_link in VIO to base_link in UTM
+	auto R = getvb2gb();
+	Vector3d t(Vector3d::Zero());
+	t<<0.29,-0.31,-0.84;
+	auto T = constructT(R, t);
+	return T;
+}
 
 class PoseInfo{
 public:
@@ -77,34 +96,41 @@ public:
 	Matrix3d R;
 	Vector3d ypr;
 	VectorXd pose;
+	Matrix4d T;
 	bool shift_base_link;
-};
-void convert(PoseInfo & poseinfo){
-	VectorXd &pose = poseinfo.pose;
-	Vector3d &P = poseinfo.P;
-	Matrix3d &R = poseinfo.R;
-	Vector3d &ypr =  poseinfo.ypr;
-	cout<<poseinfo.name<<",";
-	P = pose.segment(0, 3);
-	double q_x, q_y, q_z, q_w;
-	q_x = pose[3];
-	q_y = pose[4];
-	q_z = pose[5];
-	q_w = pose[6];
-	Eigen::Quaterniond q(q_w,q_x, q_y, q_z);
-	if(poseinfo.shift_base_link){
-		q = q * Eigen::Quaterniond(getvb2gb());
+public:
+	void convert(){
+		cout<<name<<",";
+		P = pose.segment(0, 3);
+		double q_x, q_y, q_z, q_w;
+		q_x = pose[3];
+		q_y = pose[4];
+		q_z = pose[5];
+		q_w = pose[6];
+		Eigen::Quaterniond q(q_w,q_x, q_y, q_z);
+		if(shift_base_link){
+			q = q * Eigen::Quaterniond(getvb2gb());
+		}
+
+		R = q;
+		ypr = R2ypr(R);
+		T = constructT(R, P);
+	//	cout<<"pose="<<pose.transpose();
+		cout<<",position="<<P.transpose();
+		cout<<",ypr="<<ypr.transpose();
+		cout<<",\nT="<<T;
+		cout<<endl<<", R="<<R<<endl;
 	}
+};
 
-	R = q;
-	ypr = R2ypr(R);
-//	cout<<"pose="<<pose.transpose();
-	cout<<",position="<<P.transpose();
-	cout<<",ypr="<<ypr.transpose();
-	cout<<endl<<", R="<<R<<endl;
-
+void convertfromT(string name , Matrix4d &_T){
+	auto T = _T;
+	auto R = T.block(0,0,3,3);
+	auto P = T.block(0,3,3,1);
+	auto ypr = R2ypr(R);
+	cout<<name<<": position = "<<P.transpose()<<",ypr="<<ypr.transpose()<<endl;
+	cout<<name<<": T="<<T<<endl;
 }
-
 void getVG(PoseInfo & vb, PoseInfo & gb, PoseInfo & vg){
 
 	Matrix3d Rvg = vb.R * gb.R.transpose();
@@ -122,17 +148,53 @@ void getVG(PoseInfo & vb, PoseInfo & gb, PoseInfo & vg){
 
 }
 
+
+void test_acc_est(){
+	//initialize estimated relative pose
+	PoseInfo Toc("Toc");
+	Toc.pose<<1.472596,3.737560,-0.089476,0.003098,0.009812,0.006837,0.999924;
+	Toc.convert();
+	Matrix4d est_rel_pose = Toc.T;
+	convertfromT("est_rel_pose", est_rel_pose);
+
+	//initialize ground truth pose
+	PoseInfo TGo_gb("TGo_gb");
+	TGo_gb.pose<<331383.430427,	3470499.08365,	14.7564034945,-0.00144698227995, -0.0117098317469,	0.221215935085,	0.975153473125;
+	TGo_gb.convert();
+
+	PoseInfo TGc_gb("TGc_gb");
+	TGc_gb.pose<<331387.457553,	3470499.17539,	14.6627616394,-0.000116566808233,-0.000860592516973,	0.230311272308,	0.973116623864;
+	TGc_gb.convert();
+
+	Matrix4d Tgbvb = getvb2gbT();
+	convertfromT("Tgbvb", Tgbvb);
+
+	Matrix4d gt_rel_pose = (TGo_gb.T * Tgbvb).inverse() * (TGc_gb.T * Tgbvb);
+
+	convertfromT("gt_rel_pose", gt_rel_pose);
+
+	Matrix4d err = gt_rel_pose.inverse() * est_rel_pose;
+
+	convertfromT("err", err);
+	cout<<"distance = "<<gt_rel_pose.block(0,3,3,1).norm()<<endl;
+
+
+}
+
 int main()
 {
+
 	cout.setf(ios::fixed);
 	std::cout<<setprecision(6);
 
-	Eigen::Quaterniond q(0.977871201916, 0.00176938361239,  -0.0107957019332,  0.208921599085);
-	Matrix3d R;
-	R = q;
-	Vector3d ypr;
-	ypr = R2ypr(R);
-	cout<<ypr<<endl;
+	test_acc_est();
+
+//	Eigen::Quaterniond q(0.977871201916, 0.00176938361239,  -0.0107957019332,  0.208921599085);
+//	Matrix3d R;
+//	R = q;
+//	Vector3d ypr;
+//	ypr = R2ypr(R);
+//	cout<<ypr<<endl;
 
 
 
