@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include <iomanip>
+#include <cmath>
 using namespace std;
 
 #include <iostream>
@@ -6,6 +9,7 @@ using namespace std;
 using Eigen::MatrixXd;
 using Eigen::Matrix3d;
 using Eigen::Vector3d;
+using Eigen::VectorXd;
 
 template <typename Derived>
      Eigen::Matrix<typename Derived::Scalar, 3, 3> ypr2R(const Eigen::MatrixBase<Derived> &ypr)
@@ -50,19 +54,156 @@ static Eigen::Vector3d R2ypr(const Eigen::Matrix3d &R)
 
         return ypr / M_PI * 180.0;
     }
+Matrix3d getvb2gb(){
+	//compute the transform from base_link in VIO to base_link in UTM
+	Vector3d ypr;
+	ypr<<-90, 0,0;
+	static MatrixXd R;
+	static bool first_time = true;
+	if(first_time){
+		first_time = false;
+		R = ypr2R(ypr);
+	}
+	return R;
+}
 
+class PoseInfo{
+public:
+	PoseInfo(string _name):pose(7), name(_name){
+		shift_base_link = false;
+	}
+	string name;
+	Vector3d P;
+	Matrix3d R;
+	Vector3d ypr;
+	VectorXd pose;
+	bool shift_base_link;
+};
+void convert(PoseInfo & poseinfo){
+	VectorXd &pose = poseinfo.pose;
+	Vector3d &P = poseinfo.P;
+	Matrix3d &R = poseinfo.R;
+	Vector3d &ypr =  poseinfo.ypr;
+	cout<<poseinfo.name<<",";
+	P = pose.segment(0, 3);
+	double q_x, q_y, q_z, q_w;
+	q_x = pose[3];
+	q_y = pose[4];
+	q_z = pose[5];
+	q_w = pose[6];
+	Eigen::Quaterniond q(q_w,q_x, q_y, q_z);
+	if(poseinfo.shift_base_link){
+		q = q * Eigen::Quaterniond(getvb2gb());
+	}
+
+	R = q;
+	ypr = R2ypr(R);
+//	cout<<"pose="<<pose.transpose();
+	cout<<",position="<<P.transpose();
+	cout<<",ypr="<<ypr.transpose();
+	cout<<endl<<", R="<<R<<endl;
+
+}
+
+void getVG(PoseInfo & vb, PoseInfo & gb, PoseInfo & vg){
+
+	Matrix3d Rvg = vb.R * gb.R.transpose();
+	Vector3d tvg = -Rvg * gb.P + vb.P;
+
+//	Rvg = Rvg.transpose().eval();
+//	tvg = -Rvg * tvg;
+
+	Eigen::Quaterniond q(Rvg);
+	vg.pose.segment(0, 3) = tvg;
+	vg.pose[3] = q.x();
+	vg.pose[4] = q.y();
+	vg.pose[5] = q.z();
+	vg.pose[6] = q.w();
+
+}
 
 int main()
 {
-	//yaw, pitch ,roll in ENU frame (world frame)
-	Eigen::Vector3d ypr{-72,0, 0 };
-	Eigen::Vector3d v_b{-0.643986, 1.830101, -0.020833 };
-	//get body to world frame rotation
-	Eigen::Matrix3d Rwb = ypr2R(ypr);
+	cout.setf(ios::fixed);
+	std::cout<<setprecision(6);
+
+	Eigen::Quaterniond q(0.977871201916, 0.00176938361239,  -0.0107957019332,  0.208921599085);
+	Matrix3d R;
+	R = q;
+	Vector3d ypr;
+	ypr = R2ypr(R);
+	cout<<ypr<<endl;
 
 
-	Eigen::Vector3d v_w = Rwb * v_b;
-	cout<<"world velocity: "<<v_w<<endl;
+
+
+/*	Vector3d ypr;
+	ypr<<-65, 0,0;
+	auto R = ypr2R(ypr);
+	Eigen::Quaterniond q(R);
+//	cout<<q;
+
+
+	PoseInfo t0_v("t0_v");
+	t0_v.pose<<0, 5, 0, 0, 0, 0, 1;
+	convert(t0_v);
+
+	PoseInfo t0_g("t0_g");
+	t0_g.pose<<4.532, 2.11, 0, q.x(), q.y(), q.z(),q.w();
+	convert(t0_g);
+//
+	PoseInfo t0_vg("t0_vg");
+	getVG(t0_v, t0_g, t0_vg);
+	convert(t0_vg);
+	*/
+
+//	//points for t1
+//	PoseInfo t1_v("t1_v");
+//	t1_v.pose<<0, 9.0123400, 0, -0.0015806, 0.0036900, 0.0059892, 0.9999740;
+//	convert(t1_v);
+//
+//	PoseInfo t1_g("t1_g");
+//	t1_g.pose<<8.4, 3.548564, 0, -0.000272, -0.007695, 0.215388, 0.976498;
+//	convert(t1_g);
+//
+//	PoseInfo t1_vg("t1_vg");
+//	getVG(t1_v, t1_g, t1_vg);
+//	convert(t1_vg);
+
+//	PoseInfo t0_v("t0_v");
+//	t0_v.pose<<-0.0369801, 4.9809915, -0.1591650, 0.0004093, 0.0019082, 0.0025026, 0.9999950;
+//	convert(t0_v);
+//
+//	PoseInfo t0_g("t0_g");
+//	t0_g.shift_base_link = true;
+//	t0_g.pose<<4.650712, 1.999425, 0.055847, 0.001610, -0.008749, 0.211701, 0.977294;
+//	convert(t0_g);
+//
+//	PoseInfo t0_vg("t0_vg");
+//	getVG(t0_v, t0_g, t0_vg);
+//	convert(t0_vg);
+//
+//	//points for t1
+//	PoseInfo t1_v("t1_v");
+//	t1_v.pose<<-0.1029960, 9.0123400, -0.2488936, -0.0015806, 0.0036900, 0.0059892, 0.9999740;
+//	convert(t1_v);
+//
+//	PoseInfo t1_g("t1_g");
+//	t1_g.shift_base_link = true;
+//	t1_g.pose<<8.354912, 3.548564, 0.035288, -0.000272, -0.007695, 0.215388, 0.976498;
+//	convert(t1_g);
+//
+//	PoseInfo t1_vg("t1_vg");
+//	getVG(t1_v, t1_g, t1_vg);
+//	convert(t1_vg);
+//
+//	auto R = t0_vg.R * t1_g.R;
+//	auto t = t0_vg.R * t1_g.P + t0_vg.P;
+//	Eigen::Quaterniond q(R);
+//	PoseInfo res("res");
+//	res.pose<<t[0],t[1],t[2],q.x(),q.y(),q.z(),q.w();
+//	convert(res);
+
 
 
 }
