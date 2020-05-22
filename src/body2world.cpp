@@ -81,11 +81,26 @@ Matrix4d getvb2gbT(){
 	//compute the transform from base_link in VIO to base_link in UTM
 	auto R = getvb2gb();
 	Vector3d t(Vector3d::Zero());
-	t<<0.29,-0.31,-0.84;
+//	t<<0.29,-0.31,-0.84;
+	t<<-0.31,-0.29,-0.84;
 	auto T = constructT(R, t);
 	return T;
 }
 
+Matrix4d getgb2vbT(){
+	Vector3d ypr;
+	ypr<<90, 0,0;
+	static Matrix3d R;
+	static bool first_time = true;
+	if(first_time){
+		first_time = false;
+		R = ypr2R(ypr);
+	}
+	Vector3d t(Vector3d::Zero());
+	t<<-0.29,0.31,0.84;
+	Matrix4d T = constructT(R, t);
+	return T;
+}
 class PoseInfo{
 public:
 	PoseInfo(string _name):pose(7), name(_name){
@@ -166,7 +181,7 @@ void test_acc_est(){
 	TGc_gb.pose<<331387.457553,	3470499.17539,	14.6627616394,-0.000116566808233,-0.000860592516973,	0.230311272308,	0.973116623864;
 	TGc_gb.convert();
 
-	Matrix4d Tgbvb = getvb2gbT();
+	Matrix4d Tgbvb = getgb2vbT().inverse();
 	convertfromT("Tgbvb", Tgbvb);
 
 	Matrix4d gt_rel_pose = (TGo_gb.T * Tgbvb).inverse() * (TGc_gb.T * Tgbvb);
@@ -181,11 +196,35 @@ void test_acc_est(){
 
 }
 
+void test_basic_transform(){
+	Eigen::Quaterniond q(0.975153473125,-0.00144698227995,    -0.0117098317469,   0.221215935085);
+	//	cout<<"q="<<q;
+	Matrix3d R(q);
+	cout<<"R"<<R<<endl;
+
+	Eigen::Quaterniond q2(R);
+	cout<<"q="<<q2.x()<<","<<q2.y()<<","<<q2.z()<<","<<q2.w()<<endl;
+
+	Vector3d ypr;
+	ypr = R2ypr(R);
+	cout<<"ypr="<<ypr<<endl;
+
+	Matrix3d R2;
+	R2 = ypr2R(ypr);
+	cout<<"R="<<R<<endl;
+}
+
 int main()
 {
 
 	cout.setf(ios::fixed);
 	std::cout<<setprecision(6);
+
+
+
+
+
+
 
 	test_acc_est();
 
